@@ -1,14 +1,15 @@
-//^\/foo(?:\.([^\/#\?]+?))[\/#\?]?$
-//^\/foo(?:\.([^\/#\?]+?))[\/]?(\?[^\/#]*)?(#.*)?
-
+//Author: charlie@callaway.cloud
+//  Description: UriTemplate parser.
+//   NOTE: This would be much cleaner as a LR parser
+//
 public with sharing class UriTemplate {
     public System.Pattern regex;
-    public String[] captureNames;
+    private String[] namedParameters;
 
     public UriTemplate(String uriTemplate) {
         String[] parts = uriTemplate.split('(?=[\\/|\\.])');
         String regexStr = '^';
-        captureNames = new List<String>{};
+        namedParameters = new List<String>{};
         for (Integer i = 0; i < parts.size(); i++) {
             String part = parts[i];
             String delimeter;
@@ -27,7 +28,7 @@ public with sharing class UriTemplate {
                         captureName.length() - 1
                     );
                 }
-                captureNames.add(captureName);
+                namedParameters.add(captureName);
             } else {
                 regexStr += (delimeter != null ? '\\' + delimeter : '') + part;
             }
@@ -39,7 +40,7 @@ public with sharing class UriTemplate {
     public Match parse(String url) {
         System.Matcher matcher = regex.matcher(url);
         if (matcher.matches()) {
-            Integer namedCaptures = captureNames.size();
+            Integer namedCaptures = namedParameters.size();
             Match mr = new Match();
 
             //parse uri named captures
@@ -47,8 +48,7 @@ public with sharing class UriTemplate {
                 mr.params = new Map<String, String>();
 
                 for (Integer i = 0; i < namedCaptures; i++) {
-                    String name = captureNames[i];
-                    system.debug(matcher);
+                    String name = namedParameters[i];
                     mr.params.put(name, matcher.group(i + 1));
                 }
             }

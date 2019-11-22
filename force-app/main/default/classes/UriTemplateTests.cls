@@ -54,6 +54,13 @@ public class UriTemplateTests {
 
     @isTest
     private static void extension() {
+        UriTemplate uri = new UriTemplate('/foo.png');
+        UriTemplate.Match m = uri.parse('/foo.png');
+        System.assertNotEquals(null, m);
+    }
+
+    @isTest
+    private static void extensionTemplate() {
         UriTemplate uri = new UriTemplate('/foo.:ext');
         UriTemplate.Match m = uri.parse('/foo.png');
         System.assertNotEquals(null, m);

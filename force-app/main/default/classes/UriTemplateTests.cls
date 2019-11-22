@@ -36,9 +36,18 @@ public class UriTemplateTests {
     private static void doubleSlash() {
         UriTemplate uri = new UriTemplate('foo//abc');
         UriTemplate.Match m = uri.parse('foo//abc');
-        // system.assertEquals(uri.regex.Pattern(), '');
         System.assertNotEquals(null, m);
         m = uri.parse('foo/abc');
+        System.assertEquals(null, m);
+    }
+
+    @isTest
+    private static void dash() {
+        UriTemplate uri = new UriTemplate('img-:num.png');
+        UriTemplate.Match m = uri.parse('img-123.png');
+        System.assertNotEquals(null, m);
+        System.assertEquals('123', m.params.get('num'));
+        m = uri.parse('img-123.jpg');
         System.assertEquals(null, m);
     }
 
@@ -57,6 +66,15 @@ public class UriTemplateTests {
         UriTemplate uri = new UriTemplate('/foo.png');
         UriTemplate.Match m = uri.parse('/foo.png');
         System.assertNotEquals(null, m);
+    }
+
+    @isTest
+    private static void nameAndExtension() {
+        UriTemplate uri = new UriTemplate('/foo/:name.:ext');
+        UriTemplate.Match m = uri.parse('/foo/one.jpg');
+        System.assertNotEquals(null, m);
+        System.assertEquals('one', m.params.get('name'));
+        System.assertEquals('jpg', m.params.get('ext'));
     }
 
     @isTest
@@ -97,6 +115,18 @@ public class UriTemplateTests {
         m = uri.parse('/123/foo/');
         System.assertNotEquals(null, m);
         System.assertEquals('123', m.params.get('bar'));
+    }
+
+    @isTest
+    private static void groupOptional4() {
+        UriTemplate uri = new UriTemplate('/:bar/:foo?');
+        UriTemplate.Match m = uri.parse('/123');
+        System.assertNotEquals(null, m);
+        System.assertEquals('123', m.params.get('bar'));
+        m = uri.parse('/123/456');
+        System.assertNotEquals(null, m);
+        System.assertEquals('123', m.params.get('bar'));
+        System.assertEquals('456', m.params.get('foo'));
     }
 
     @isTest

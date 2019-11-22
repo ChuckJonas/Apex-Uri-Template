@@ -1,19 +1,27 @@
 //Author: charlie@callaway.cloud
 //  Description: UriTemplate parser.
-//   NOTE: This would be much cleaner as a LR parser
+//   NOTE: This is a quick and dirty implementation. Should be rewritten as a lexical parser
 //
-public with sharing class UriTemplate {
+public class UriTemplate {
     public System.Pattern regex;
     private String[] namedParameters;
 
-    public UriTemplate(String uriTemplate) {
-        String[] parts = uriTemplate.split('(?=[\\/|\\.])');
+    /** Constructor
+     *  @template the URI Template to build.
+     *   See readme for supported template syntax
+     */
+    public UriTemplate(String template) {
+        String[] parts = template.split('(?=\\/|\\.|-)');
         String regexStr = '^';
         namedParameters = new List<String>{};
         for (Integer i = 0; i < parts.size(); i++) {
             String part = parts[i];
             String delimeter;
-            if (part.startsWith('/') || part.startsWith('.')) {
+            if (
+                part.startsWith('/') ||
+                part.startsWith('.') ||
+                part.startsWith('-')
+            ) {
                 delimeter = part.substring(0, 1);
                 part = part.substring(1, part.length());
             }
@@ -36,6 +44,8 @@ public with sharing class UriTemplate {
         regexStr += '[\\/]?(\\?[^\\/#]*)?(#.*)?$';
         regex = Pattern.compile(regexStr);
     }
+
+    // /foo:ext/
 
     public Match parse(String url) {
         System.Matcher matcher = regex.matcher(url);

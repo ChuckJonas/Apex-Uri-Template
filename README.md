@@ -2,9 +2,9 @@
 
 Allows defining and testing & parsing simple "Template URI" in Salesforce's Apex. Developed primarily to assist in URL routing.
 
-**Some Example Use Cases**
+## Example Use Cases
 
-Template: `/api/:version/account/:id`
+**Template:** `/api/:version/account/:id`
 
 Input: `/api/v2/account/123`
 
@@ -14,7 +14,7 @@ Input: `/api/v2/account/123`
 }
 ```
 
-Template: `/imgs/:name.:ext`
+**Template:** `/imgs/:name.:ext`
 
 Input: `/imgs/foo.png`
 
@@ -25,7 +25,7 @@ Input: `/imgs/foo.png`
 }
 ```
 
-Template: `/images/foo-:num.jpg`
+**Template:** `/images/foo-:num.jpg`
 
 Input: `/imgs/foo-123.png?size=100`
 
@@ -37,7 +37,7 @@ Input: `/imgs/foo-123.png?size=100`
 }
 ```
 
-Template: `/foo`
+**Template:** `/foo`
 
 Input: `/foo?bar=123#abc`
 

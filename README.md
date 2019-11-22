@@ -1,6 +1,6 @@
 # Apex UriTemplate
 
-Allows matching and parsing of template URI in Salesforce's Apex. Developed to assist in URL routing and parsing for RestResources.
+Allows matching and parsing of simple Template URI in Salesforce's Apex. Developed to assist in URL routing and parsing for RestResources.
 
 _Example:_
 
@@ -12,11 +12,11 @@ if(match != null){            //returns null if no match
 }
 ```
 
-Based loosely on the [path-to-regexp npm library](https://github.com/pillarjs/path-to-regexp) (but with waaay less features).
+Based loosely on [path-to-regexp npm library](https://github.com/pillarjs/path-to-regexp) and [Microsofts URITemplate](https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/uritemplate-and-uritemplatetable) (but waaay more limited).
 
 ## Features
 
--   parses URI template params
+-   parses URI template "Named Parameters" (`/account/:id`)
     -- optional modifier `/account/:id?`
 -   parses URL query params. EX: `?name=foo` == `{ name => foo }`
 -   parses hash
@@ -24,4 +24,4 @@ Based loosely on the [path-to-regexp npm library](https://github.com/pillarjs/pa
 ## Limitations
 
 -   Does not support protocols (`https://`)
--   Pretty much anything else that `path-to-regexp` can do and that isn't listed above ;)
+-   Each "Named Parameter" must be delimited by `/` or `.`

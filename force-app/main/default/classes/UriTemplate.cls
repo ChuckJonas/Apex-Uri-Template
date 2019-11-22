@@ -1,16 +1,25 @@
+//^\/foo(?:\.([^\/#\?]+?))[\/#\?]?$
+//^\/foo(?:\.([^\/#\?]+?))[\/]?(\?[^\/#]*)?(#.*)?
+
 public with sharing class UriTemplate {
     public System.Pattern regex;
     public String[] captureNames;
 
     public UriTemplate(String uriTemplate) {
-        String[] parts = uriTemplate.split('\\/');
+        String[] parts = uriTemplate.split('(?=[\\/|\\.])');
         String regexStr = '^';
         captureNames = new List<String>{};
         for (Integer i = 0; i < parts.size(); i++) {
             String part = parts[i];
+            String delimeter;
+            if (part.startsWith('/') || part.startsWith('.')) {
+                delimeter = part.substring(0, 1);
+                part = part.substring(1, part.length());
+            }
+
             if (part.startsWith(':')) {
                 String captureName = part.substring(1, part.length());
-                regexStr += '(?:\\/([^\\/#\\?]+?))';
+                regexStr += '(?:\\' + delimeter + '([^\\/#\\?]+?))';
                 if (part.endsWith('?')) {
                     regexStr += '?';
                     captureName = captureName.substring(
@@ -19,10 +28,8 @@ public with sharing class UriTemplate {
                     );
                 }
                 captureNames.add(captureName);
-            } else if (!String.isEmpty(part)) {
-                regexStr += (i == 0 ? '' : '\\/') + part;
             } else {
-                regexStr += (i == 0 ? '' : '\\/');
+                regexStr += (delimeter != null ? '\\' + delimeter : '') + part;
             }
         }
         regexStr += '[\\/]?(\\?[^\\/#]*)?(#.*)?$';

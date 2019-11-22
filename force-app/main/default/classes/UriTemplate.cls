@@ -1,48 +1,21 @@
 //Author: charlie@callaway.cloud
-//  Description: UriTemplate parser.
-//   NOTE: This is a quick and dirty implementation. Should be rewritten as a lexical parser
+//  Description: Define, test and parse template URL
+
 //
 public class UriTemplate {
     public System.Pattern regex;
-    private String[] namedParameters;
+    private Map<Integer, String> namedParameters;
 
     /** Constructor
      *  @template the URI Template to build.
      *   See readme for supported template syntax
      */
     public UriTemplate(String template) {
-        String[] parts = template.split('(?=\\/|\\.|-)');
-        String regexStr = '^';
-        namedParameters = new List<String>{};
-        for (Integer i = 0; i < parts.size(); i++) {
-            String part = parts[i];
-            String delimeter;
-            if (
-                part.startsWith('/') ||
-                part.startsWith('.') ||
-                part.startsWith('-')
-            ) {
-                delimeter = part.substring(0, 1);
-                part = part.substring(1, part.length());
-            }
-
-            if (part.startsWith(':')) {
-                String captureName = part.substring(1, part.length());
-                regexStr += '(?:\\' + delimeter + '([^\\/#\\?]+?))';
-                if (part.endsWith('?')) {
-                    regexStr += '?';
-                    captureName = captureName.substring(
-                        0,
-                        captureName.length() - 1
-                    );
-                }
-                namedParameters.add(captureName);
-            } else {
-                regexStr += (delimeter != null ? '\\' + delimeter : '') + part;
-            }
-        }
-        regexStr += '[\\/]?(\\?[^\\/#]*)?(#.*)?$';
-        regex = Pattern.compile(regexStr);
+        UriTemplateTokenizer tokenizer = new UriTemplateTokenizer();
+        UriTemplateParser p = new UriTemplateParser(tokenizer.scan(template));
+        p.parse();
+        this.regex = p.regex;
+        this.namedParameters = p.namedParameterCaptures;
     }
 
     // /foo:ext/
@@ -56,12 +29,14 @@ public class UriTemplate {
             //parse uri named captures
             if (namedCaptures > 0) {
                 mr.params = new Map<String, String>();
-
-                for (Integer i = 0; i < namedCaptures; i++) {
-                    String name = namedParameters[i];
-                    mr.params.put(name, matcher.group(i + 1));
+                for (Integer index : namedParameters.keySet()) {
+                    String name = namedParameters.get(index);
+                    mr.params.put(name, matcher.group(index));
                 }
             }
+
+            // Below here will need to be refactored to allowed non name-param groups
+            // qry & hash should always be last 2 groups respectively
 
             //parse query string
             String qry = matcher.group(namedCaptures + 1);

@@ -57,6 +57,14 @@ public class UriTemplateParser {
             // double //
             segment += '\\' + delimeter;
             index--; //probably a better way?
+        }else if(tokens[index] instanceof UriTemplateToken.WildCardParamToken){
+            segment = '(' + (delimeter != null ? '?:\\' + delimeter : '') + '([^#\\?]+?))';
+
+            this.captureGroup++;
+            namedParameterCaptures.put(this.captureGroup, '*');
+            if(peek() != null){
+              throw new ParseException('WildCard (*) can only occur at the very end of a template!');
+            }
         } else {
             throw new ParseException('Unexpected Token ' + tokens[index]);
         }
@@ -81,6 +89,10 @@ public class UriTemplateParser {
             if (peek() instanceof UriTemplateToken.OptionalNameParamToken) {
                 regex += '?';
                 moveNext();
+            }
+            if(peek() instanceof UriTemplateToken.WildCardParamToken){
+              regex = '(?:\\' + delimeter + '([^#\\?]+?))';
+              moveNext();
             }
             return regex;
         }

@@ -78,6 +78,8 @@ if(match != null){            // null if no match
 -   `/foo/bar` Literal match of `/foo/bar`
 -   `/foo/:bar` Named Parameter
 -   `/foo/:bar?` Optional Named Parameter
+-   `/foo/:abc*` Named Parameter wildcard.  Will match to end of URL (until query params `?`). Only allowed as last character of template.  Result will be stored in `abc` Named Parameter
+-   `/foo/*` same as above, but result will be stored in `*` Named Parameter
 
 See `UriTemplateTests` for more complete usage examples.
 

@@ -22,4 +22,7 @@ public abstract class UriTemplateToken {
 
     public class OptionalNameParamToken extends UriTemplateToken {
     }
+
+    public class WildCardParamToken extends UriTemplateToken {
+    }
 }

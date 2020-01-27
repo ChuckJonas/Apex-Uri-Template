@@ -15,6 +15,58 @@ public class UriTemplateTests {
     }
 
     @isTest
+    private static void wildCardParam() {
+        UriTemplate uri = new UriTemplate('/v1/customer/:customerId/:route*');
+
+        UriTemplate.Match m = uri.parse('/v1/customer/123/accounts');
+        System.assertNotEquals(null, m);
+        system.assertEquals('123', m.params.get('customerId'));
+        system.assertEquals('accounts', m.params.get('route'));
+
+        m = uri.parse('/v1/customer/123/accounts/testing/a/long/route');
+        System.assertNotEquals(null, m);
+        system.assertEquals('123', m.params.get('customerId'));
+        system.assertEquals('accounts/testing/a/long/route', m.params.get('route'));
+
+        m = uri.parse('/v1/customer/123/accounts/testing?id=hello#world');
+        System.assertNotEquals(null, m);
+        system.assertEquals('123', m.params.get('customerId'));
+        system.assertEquals('accounts/testing', m.params.get('route'));
+        system.assertEquals('hello', m.qry.get('id'));
+        system.assertEquals('world', m.hash);
+    }
+
+    @isTest
+    private static void wildCardIndepedent() {
+        UriTemplate uri = new UriTemplate('/v1/customer/:customerId/*');
+
+        UriTemplate.Match m = uri.parse('/v1/customer/123/accounts');
+        System.assertNotEquals(null, m);
+        system.assertEquals('123', m.params.get('customerId'));
+        system.assertEquals('accounts', m.params.get('*'));
+
+        m = uri.parse('/v1/customer/123/accounts/testing/a/long/route');
+        System.assertNotEquals(null, m);
+        system.assertEquals('123', m.params.get('customerId'));
+        system.assertEquals('accounts/testing/a/long/route', m.params.get('*'));
+
+        m = uri.parse('/v1/customer/123/accounts/testing?id=hello#world');
+        System.assertNotEquals(null, m);
+        system.assertEquals('123', m.params.get('customerId'));
+        system.assertEquals('accounts/testing', m.params.get('*'));
+        system.assertEquals('hello', m.qry.get('id'));
+        system.assertEquals('world', m.hash);
+    }
+
+    @isTest
+    private static void wildNotAllowed() {
+      try{
+        UriTemplate uri = new UriTemplate('foo*/');
+        System.assert(false, 'should have thrown TokenException exception');
+      }catch(UriTemplateParser.ParseException e){}
+    }
+
+    @isTest
     private static void notStartsWithSlash() {
         UriTemplate uri = new UriTemplate('foo');
         UriTemplate.Match m = uri.parse('foo');

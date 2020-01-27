@@ -25,6 +25,9 @@ public class UriTemplateTokenizer {
             } else if (c == '?') {
                 tokens.Add(new UriTemplateToken.OptionalNameParamToken());
                 reader.Read();
+            } else if (isWildCard(c)) {
+                tokens.Add(new UriTemplateToken.WildCardParamToken());
+                reader.Read();
             } else if (isIdenifier(c)) {
                 string s = parseIdentifier();
                 tokens.Add(new UriTemplateToken.IdentifierToken(s));
@@ -48,12 +51,16 @@ public class UriTemplateTokenizer {
         return id;
     }
 
+    private boolean isWildCard(String c){
+      return c == '*';
+    }
+
     private boolean isDelimeter(String c) {
         return c == '/' | c == '.' | c == '-';
     }
 
     private boolean isIdenifier(string c) {
-        return !(isDelimeter(c) || c == '?');
+        return !(isDelimeter(c) || isWildCard(c) || c == '?');
     }
 
     public class TokenException extends Exception {

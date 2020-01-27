@@ -2,7 +2,7 @@
 
 Allows defining and testing & parsing simple "Template URI" in Salesforce's Apex. Developed primarily to assist in URL routing.
 
-[Install (04t1C000000ODlfQAG)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1C000000ODlfQAG)
+[Install (04t1C000000ODsHQAW)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1C000000ODsHQAW)
 
 ## Example Use Cases
 

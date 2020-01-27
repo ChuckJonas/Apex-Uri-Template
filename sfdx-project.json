@@ -4,8 +4,8 @@
             "path": "force-app",
             "default": true,
             "package": "UriTemplate",
-            "versionName": "ver 0.1",
-            "versionNumber": "0.1.0.NEXT"
+            "versionName": "ver 0.2",
+            "versionNumber": "0.2.0.NEXT"
         }
     ],
     "namespace": "",
@@ -13,6 +13,7 @@
     "sourceApiVersion": "47.0",
     "packageAliases": {
         "UriTemplate": "0Ho1C000000PAtLSAW",
-        "UriTemplate@0.1.0-1": "04t1C000000ODlfQAG"
+        "UriTemplate@0.1.0-1": "04t1C000000ODlfQAG",
+        "UriTemplate@0.2.0-1": "04t1C000000ODsHQAW"
     }
 }
